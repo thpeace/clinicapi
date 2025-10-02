@@ -4,10 +4,12 @@ pipeline {
     environment {
         DOCKER_IMAGE = "clinicapi:latest"
         BRANCH_NAME = "dev"
-        DOCKER_HOST = "tcp://10.10.0.154:2375"
+        REMOTE_USER = "docker"
+        REMOTE_HOST = "10.10.0.154"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: BRANCH_NAME,
@@ -28,10 +30,21 @@ pipeline {
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Push Image to Remote Server') {
             steps {
-                sh "docker rm -f clinicapi || true"
-                sh "docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}"
+                withCredentials([sshUserPrivateKey(credentialsId: 'remote-server-ssh-pass', 
+                                                  usernameVariable: 'SSH_USER', 
+                                                  passwordVariable: 'SSH_PASS')]) {
+                    sh """
+                        docker save ${DOCKER_IMAGE} -o clinicapi.tar
+                        sshpass -p '$SSH_PASS' scp clinicapi.tar ${REMOTE_USER}@${REMOTE_HOST}:/home/docker/
+                        sshpass -p '$SSH_PASS' ssh ${REMOTE_USER}@${REMOTE_HOST} '
+                            docker load -i /home/docker/clinicapi.tar &&
+                            docker rm -f clinicapi || true &&
+                            docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}
+                        '
+                    """
+                }
             }
         }
     }
