@@ -1,14 +1,15 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "myapp:latest"
+environment {
+        DOCKER_IMAGE = "clinicapi:latest"
+        BRANCH_NAME = "dev"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: BRANCH_NAME,
                     url: 'https://github.com/thpeace/clinicapi.git',
                     credentialsId: 'github-credentials'
             }
