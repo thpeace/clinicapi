@@ -1,8 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'maven:3.9.0-openjdk-17' } // Maven + Java 17
+    }
 
     environment {
-        DOCKER_IMAGE = "clinicapi:latest"
+        DOCKER_IMAGE = "clinicbackend:latest"
         BRANCH_NAME = "dev"
         DOCKER_HOST = "tcp://10.10.0.154:2375"
     }
@@ -19,25 +21,31 @@ pipeline {
 
         stage('Build Maven Project') {
             steps {
-                echo "Building Spring Boot project with Maven..."
-                sh "mvn clean package -DskipTests"
+                dir('clinicbackend') {   // <-- change to subdirectory
+                    echo "Building Spring Boot project with Maven..."
+                    sh "mvn clean package -DskipTests"
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                dir('clinicbackend') {   // Dockerfile must be in clinicbackend
+                    echo "Building Docker image..."
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                echo "Deploying Docker container..."
-                // Stop old container if exists
-                sh "docker rm -f clinicapi || true"
-                // Run new container
-                sh "docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}"
+                dir('clinicbackend') {
+                    echo "Deploying Docker container..."
+                    // Stop old container if exists
+                    sh "docker rm -f clinicbackend || true"
+                    // Run new container
+                    sh "docker run -d --name clinicbackend -p 8080:8080 ${DOCKER_IMAGE}"
+                }
             }
         }
     }
