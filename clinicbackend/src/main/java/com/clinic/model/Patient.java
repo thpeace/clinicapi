@@ -1,6 +1,6 @@
 package com.clinic.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "patient")
@@ -17,12 +17,12 @@ public class Patient {
     private String birthday;
     private String occupation;
     private String nationality;
-    private String tel1;
-    private String email;
-    private String status;
+    private String cn;
     private String clinicname;
 
-    // Getters and Setters
+    // Add other fields from your JSON as needed
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -87,28 +87,12 @@ public class Patient {
         this.nationality = nationality;
     }
 
-    public String getTel1() {
-        return tel1;
+    public String getCn() {
+        return cn;
     }
 
-    public void setTel1(String tel1) {
-        this.tel1 = tel1;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCn(String cn) {
+        this.cn = cn;
     }
 
     public String getClinicname() {
