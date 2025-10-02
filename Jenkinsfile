@@ -1,12 +1,13 @@
 pipeline {
     agent any
 
-environment {
+    environment {
         DOCKER_IMAGE = "clinicapi:latest"
         BRANCH_NAME = "dev"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: BRANCH_NAME,
@@ -15,23 +16,37 @@ environment {
             }
         }
 
+        stage('Build Maven Project') {
+            steps {
+                echo "Building Spring Boot project with Maven..."
+                sh "mvn clean package -DskipTests"
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build(DOCKER_IMAGE)
-                }
+                echo "Building Docker image..."
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                script {
-                    // Stop old container if exists
-                    sh "docker rm -f myapp || true"
-                    // Run new container
-                    sh "docker run -d --name myapp -p 8080:8080 ${DOCKER_IMAGE}"
-                }
+                echo "Deploying Docker container..."
+                // Stop old container if exists
+                sh "docker rm -f clinicapi || true"
+                // Run new container
+                sh "docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}"
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check the logs."
         }
     }
 }
