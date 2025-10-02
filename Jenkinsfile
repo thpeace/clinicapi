@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'maven:3.9.0-openjdk-17' } // Maven + Java 17
-    }
+    agent any
 
     environment {
         DOCKER_IMAGE = "clinicbackend:latest"
@@ -10,7 +8,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: BRANCH_NAME,
@@ -21,17 +18,18 @@ pipeline {
 
         stage('Build Maven Project') {
             steps {
-                dir('clinicbackend') {   // <-- change to subdirectory
-                    echo "Building Spring Boot project with Maven..."
-                    sh "mvn clean package -DskipTests"
+                dir('clinicbackend') {
+                    echo "Building Spring Boot project inside Maven Docker container..."
+                    sh """
+                        docker run --rm -v \$PWD:/app -w /app maven:3.9.0-openjdk-17 mvn clean package -DskipTests
+                    """
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                dir('clinicbackend') {   // Dockerfile must be in clinicbackend
-                    echo "Building Docker image..."
+                dir('clinicbackend') {
                     sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
@@ -40,10 +38,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 dir('clinicbackend') {
-                    echo "Deploying Docker container..."
-                    // Stop old container if exists
                     sh "docker rm -f clinicbackend || true"
-                    // Run new container
                     sh "docker run -d --name clinicbackend -p 8080:8080 ${DOCKER_IMAGE}"
                 }
             }
@@ -55,7 +50,7 @@ pipeline {
             echo "Pipeline completed successfully!"
         }
         failure {
-            echo "Pipeline failed. Check the logs."
+            echo "Pipeline failed. Check logs."
         }
     }
 }
