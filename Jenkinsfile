@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "clinicapi:latest"
         BRANCH_NAME = "dev"
-        DOCKER_HOST = tcp://10.10.0.154:2375
+        DOCKER_HOST = "tcp://10.10.0.154:2375"
     }
 
     stages {
