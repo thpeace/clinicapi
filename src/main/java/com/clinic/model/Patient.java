@@ -1,7 +1,11 @@
 package com.clinic.model;
 
-import jakarta.persistence.*; // Use jakarta.persistence for Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "patient")
@@ -9,6 +13,7 @@ public class Patient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "hn")
@@ -18,7 +23,8 @@ public class Patient implements Serializable {
     private String mode;
 
     @Column(name = "dat")
-    private String dat;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dat;
 
     @Column(name = "level")
     private String level;
@@ -42,7 +48,8 @@ public class Patient implements Serializable {
     private String personalid;
 
     @Column(name = "birthday")
-    private String birthday;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate birthday;
 
     @Column(name = "occupation")
     private String occupation;
@@ -67,6 +74,13 @@ public class Patient implements Serializable {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "salary")
+    private BigDecimal salary;
+
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Column(name = "stayin")
     private String stayin;
@@ -131,9 +145,6 @@ public class Patient implements Serializable {
     @Column(name = "tnet")
     private String tnet;
 
-    @Column(name = "salary")
-    private String salary;
-
     @Column(name = "edu")
     private String edu;
 
@@ -188,9 +199,9 @@ public class Patient implements Serializable {
     @Column(name = "clinicname")
     private String clinicname;
 
-    // ======================
+    // =====================
     // Getters & Setters
-    // ======================
+    // =====================
 
     public Long getId() {
         return id;
@@ -216,11 +227,11 @@ public class Patient implements Serializable {
         this.mode = mode;
     }
 
-    public String getDat() {
+    public LocalDateTime getDat() {
         return dat;
     }
 
-    public void setDat(String dat) {
+    public void setDat(LocalDateTime dat) {
         this.dat = dat;
     }
 
@@ -280,11 +291,11 @@ public class Patient implements Serializable {
         this.personalid = personalid;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
@@ -350,6 +361,22 @@ public class Patient implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public String getStayin() {
@@ -520,14 +547,6 @@ public class Patient implements Serializable {
         this.tnet = tnet;
     }
 
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
-    }
-
     public String getEdu() {
         return edu;
     }
@@ -663,13 +682,4 @@ public class Patient implements Serializable {
     public void setDrugeanti(String drugeanti) {
         this.drugeanti = drugeanti;
     }
-
-    public String getClinicname() {
-        return clinicname;
-    }
-
-    public void setClinicname(String clinicname) {
-        this.clinicname = clinicname;
-    }
-
 }
