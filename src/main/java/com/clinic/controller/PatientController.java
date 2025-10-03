@@ -1,30 +1,29 @@
 package com.clinic.controller;
 
-// import com.clinic.dto.PatientResponse;
+import com.clinic.dto.PatientResponse;
 import com.clinic.model.Patient;
-import com.clinic.service.PatientService;
+import com.clinic.repository.PatientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/patients")
+@RequestMapping("/patients")
 public class PatientController {
 
-    private final PatientService patientService;
+    @Autowired
+    private PatientRepository patientRepository;
 
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
+    @PostMapping("/import")
+    public String importPatients(@RequestBody PatientResponse patientResponse) {
+        List<Patient> patients = patientResponse.getData();
+        patientRepository.saveAll(patients);
+        return "Imported " + patients.size() + " patients successfully!";
     }
 
-    // @GetMapping
-    // public PatientResponse getPatients() {
-    // List<Patient> patients = patientService.getAllPatients();
-    // return new PatientResponse("200", patients);
-    // }
-
-    @PostMapping
-    public Patient addPatient(@RequestBody Patient patient) {
-        return patientService.savePatient(patient);
+    @GetMapping
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
     }
 }
