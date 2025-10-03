@@ -3,9 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "clinicapi:latest"
-        BRANCH_NAME = "dev"
-        REMOTE_USER = "docker"
-        REMOTE_HOST = "10.10.0.154"
+        BRANCH_NAME  = "dev"
+        REMOTE_HOST  = "10.10.0.154"
     }
 
     stages {
@@ -32,16 +31,21 @@ pipeline {
 
         stage('Push Image to Remote Server') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'remote-server-ssh-pass', 
-                                                  usernameVariable: 'SSH_USER', 
+                withCredentials([usernamePassword(credentialsId: 'remote-server-ssh-pass',
+                                                  usernameVariable: 'SSH_USER',
                                                   passwordVariable: 'SSH_PASS')]) {
                     sh """
+                        # Save docker image to tarball
                         docker save ${DOCKER_IMAGE} -o clinicapi.tar
-                        sshpass -p '$SSH_PASS' scp clinicapi.tar ${REMOTE_USER}@${REMOTE_HOST}:/home/docker/
-                        sshpass -p '$SSH_PASS' ssh ${REMOTE_USER}@${REMOTE_HOST} '
+
+                        # Copy tarball to remote host
+                        sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no clinicapi.tar $SSH_USER@${REMOTE_HOST}:/home/docker/
+
+                        # On remote: load image, remove old container, start new one
+                        sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@${REMOTE_HOST} '
                             docker load -i /home/docker/clinicapi.tar &&
                             docker rm -f clinicapi || true &&
-                            docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}
+                            docker run -d --name clinicapi -p 8080:8080 clinicapi:latest
                         '
                     """
                 }
