@@ -48,8 +48,7 @@ public class Patient implements Serializable {
     private String personalid;
 
     @Column(name = "birthday")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate birthday;
+    private String birthday;
 
     @Column(name = "occupation")
     private String occupation;
@@ -291,11 +290,11 @@ public class Patient implements Serializable {
         this.personalid = personalid;
     }
 
-    public LocalDate getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
