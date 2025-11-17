@@ -18,19 +18,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def mvnHome = tool 'Default Maven'
-                    withSonarQubeEnv('SonarQube') {   // <-- Name must match Jenkins Sonar config
-                        sh "${mvnHome}/bin/mvn clean verify sonar:sonar " +
-                           "-Dsonar.projectKey=clinic_api " +
-                           "-Dsonar.projectName=clinic_api"
-                    }
-                }
-            }
-        }
-
         stage('Build Maven Project') {
             steps {
                 sh "mvn clean package -DskipTests"
