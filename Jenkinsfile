@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "clinicapi:latest"
-        BRANCH_NAME  = "dev"
+        BRANCH_NAME  = "main"
         REMOTE_USER  = "docker"
         REMOTE_HOST  = "10.10.0.154"
     }
