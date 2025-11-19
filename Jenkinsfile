@@ -2,35 +2,73 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "myapp:latest"
+        DOCKER_IMAGE = "clinicapi:latest"
+        BRANCH_NAME  = "dev"
+        REMOTE_USER  = "docker"
+        REMOTE_HOST  = "10.10.0.154"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: BRANCH_NAME,
                     url: 'https://github.com/thpeace/clinicapi.git',
                     credentialsId: 'github-credentials'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE)
+                    def mvnHome = tool 'Default Maven'
+                    withSonarQubeEnv('SonarQube') {   // <-- Name must match Jenkins Sonar config
+                        sh "${mvnHome}/bin/mvn clean verify sonar:sonar " +
+                           "-Dsonar.projectKey=clinic_api " +
+                           "-Dsonar.projectName=clinic_api"
+                    }
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Build Maven Project') {
             steps {
-                script {
-                    // Stop old container if exists
-                    sh "docker rm -f myapp || true"
-                    // Run new container
-                    sh "docker run -d --name myapp -p 8080:8080 ${DOCKER_IMAGE}"
+                sh "mvn clean package -DskipTests"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${DOCKER_IMAGE} ."
+            }
+        }
+
+        stage('Push Image to Remote Server') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'remote-server-ssh-pass',
+                                                 usernameVariable: 'SSH_USER',
+                                                 passwordVariable: 'SSH_PASS')]) {
+                    sh '''
+                        set -e
+                        docker save ${DOCKER_IMAGE} -o clinicapi.tar
+                        sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no clinicapi.tar $SSH_USER@${REMOTE_HOST}:/home/docker/
+                        sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@${REMOTE_HOST} "
+                            docker load -i /home/docker/clinicapi.tar &&
+                            docker rm -f clinicapi || true &&
+                            docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}
+                        "
+                    '''
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Pipeline completed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed. Check the logs."
         }
     }
 }
