@@ -3,17 +3,31 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "clinicapi:latest"
-        BRANCH_NAME  = "dev"
+        BRANCH_NAME  = "main"
         REMOTE_USER  = "docker"
         REMOTE_HOST  = "10.10.0.154"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: BRANCH_NAME,
                     url: 'https://github.com/thpeace/clinicapi.git',
                     credentialsId: 'github-credentials'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def mvnHome = tool 'Default Maven'
+                    withSonarQubeEnv('SonarQube') {   // <-- Name must match Jenkins Sonar config
+                        sh "${mvnHome}/bin/mvn clean verify sonar:sonar " +
+                           "-Dsonar.projectKey=clinic_api " +
+                           "-Dsonar.projectName=clinic_api"
+                    }
+                }
             }
         }
 
@@ -31,8 +45,8 @@ pipeline {
 
         stage('Push Image to Remote Server') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'remote-server-ssh-pass', 
-                                                 usernameVariable: 'SSH_USER', 
+                withCredentials([usernamePassword(credentialsId: 'remote-server-ssh-pass',
+                                                 usernameVariable: 'SSH_USER',
                                                  passwordVariable: 'SSH_PASS')]) {
                     sh '''
                         set -e
