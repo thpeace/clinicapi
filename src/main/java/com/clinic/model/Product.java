@@ -1,99 +1,89 @@
 package com.clinic.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * Product entity representing clinic products (medications, supplies, etc.)
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "product")
+@Table(name = "product", indexes = {
+        @Index(name = "idx_product_barcode", columnList = "barcode"),
+        @Index(name = "idx_product_did", columnList = "did")
+})
 public class Product implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    // ===== Primary Key =====
     @Id
-    @Column(name = "did")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // ===== Identification =====
+    @Column(nullable = false, length = 50)
     private String did;
 
-    @Column(name = "barcode")
+    @Column(unique = true, length = 100)
     private String barcode;
 
-    @Column(name = "gname")
-    private String gname;
+    private String gname; // Generic name
+    private String tname; // Trade name
 
-    @Column(name = "tname")
-    private String tname;
-
-    @Column(name = "unit")
+    // ===== Unit & Grouping =====
     private String unit;
-
-    @Column(name = "bunit")
     private String bunit;
-
-    @Column(name = "uqty")
     private Integer uqty;
-
-    @Column(name = "dgid")
     private String dgid;
-
-    @Column(name = "dgroup")
     private String dgroup;
-
-    @Column(name = "tid")
     private String tid;
-
-    @Column(name = "typname")
     private String typname;
 
-    @Column(name = "bprice")
-    private BigDecimal bprice;
+    // ===== Pricing (precision for financial safety) =====
+    @Column(precision = 15, scale = 2)
+    private BigDecimal bprice; // Buying price
 
-    @Column(name = "tprice")
-    private BigDecimal tprice;
+    @Column(precision = 15, scale = 2)
+    private BigDecimal tprice; // Trade price
 
-    @Column(name = "sprice")
-    private BigDecimal sprice;
+    @Column(precision = 15, scale = 2)
+    private BigDecimal sprice; // Selling price
 
-    @Column(name = "total")
-    private BigDecimal total;
+    @Column(precision = 18, scale = 2)
+    private BigDecimal total; // sprice * sqty
 
-    @Column(name = "sqty")
+    // ===== Stock =====
     private Integer sqty;
 
-    @Column(name = "duse")
+    // ===== Usage Instructions =====
     private String duse;
-
-    @Column(name = "duse_l1")
     private String duseL1;
-
-    @Column(name = "duse_l2")
     private String duseL2;
-
-    @Column(name = "wuse")
     private String wuse;
-
-    @Column(name = "huse")
     private String huse;
 
-    @Column(name = "status")
-    private String status;
+    // ===== Status (Enum for better consistency) =====
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ProductStatus status;
 
-    @Column(name = "dsize")
+    // ===== Extra attributes =====
     private String dsize;
-
-    @Column(name = "vat")
     private String vat;
-
-    @Column(name = "dc")
     private String dc;
-
-    @Column(name = "ec")
     private String ec;
-
-    @Column(name = "img")
     private String img;
-
-    @Column(name = "typ")
     private String typ;
 
-    // Getters and Setters
-    // ... generate using your IDE or manually write them
-
+    // ===== Enum Definition =====
+    public enum ProductStatus {
+        ACTIVE, INACTIVE, EXPIRED
+    }
 }
