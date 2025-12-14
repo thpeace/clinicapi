@@ -8,3 +8,5 @@ mvn spring-boot:run
 
 
 ++++++# 
+
+### this api for clinic application
