@@ -1,7 +1,11 @@
 package com.clinic.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,15 +25,25 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String role;
+    private Role role;
+
+    @Column(length = 512)
+    private String secretKey;
+
+    @Column
+    private LocalDateTime sessionDate;
+
+    @Column(nullable = false)
+    private Boolean enabled = true;
 
     // Default constructor
     public User() {
     }
 
     // Constructor with fields
-    public User(String username, String password, String role) {
+    public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -60,11 +74,35 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public LocalDateTime getSessionDate() {
+        return sessionDate;
+    }
+
+    public void setSessionDate(LocalDateTime sessionDate) {
+        this.sessionDate = sessionDate;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

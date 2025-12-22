@@ -680,4 +680,12 @@ public class Patient implements Serializable {
     public void setDrugeanti(String drugeanti) {
         this.drugeanti = drugeanti;
     }
+
+    public String getClinicname() {
+        return clinicname;
+    }
+
+    public void setClinicname(String clinicname) {
+        this.clinicname = clinicname;
+    }
 }

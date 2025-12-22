@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.clinic.dto.LoginRequest;
 import com.clinic.dto.LoginResponse;
+import com.clinic.model.Role;
 import com.clinic.model.User;
 import com.clinic.repository.UserRepository;
 import com.clinic.security.JwtUtil;
@@ -58,7 +59,7 @@ public class AuthService {
     /**
      * Register a new user (for initial setup/testing)
      */
-    public User register(String username, String password, String role) {
+    public User register(String username, String password, Role role) {
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists");
         }
