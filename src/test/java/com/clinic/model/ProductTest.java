@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -49,7 +50,7 @@ class ProductTest {
     private static final BigDecimal DEFAULT_TOTAL = new BigDecimal("1500.00");
     private static final Integer DEFAULT_SQTY = 100;
     private static final String DEFAULT_DUSE = "Take 1-2 tablets every 4-6 hours";
-    private static final String DEFAULT_STATUS = "ACTIVE";
+    private static final ProductStatus DEFAULT_STATUS = ProductStatus.ACTIVE;
 
     @BeforeEach
     void setUp() {
@@ -629,9 +630,9 @@ class ProductTest {
         }
 
         @ParameterizedTest(name = "Status ''{0}'' should be accepted")
-        @ValueSource(strings = { "ACTIVE", "INACTIVE", "DISCONTINUED", "OUT_OF_STOCK" })
-        @DisplayName("setStatus should accept various status values")
-        void setStatus_ShouldAcceptVariousValues(String status) {
+        @EnumSource(ProductStatus.class)
+        @DisplayName("setStatus should accept all ProductStatus enum values")
+        void setStatus_ShouldAcceptAllEnumValues(ProductStatus status) {
             // Act
             sut.setStatus(status);
 
@@ -643,13 +644,13 @@ class ProductTest {
         @DisplayName("setStatus should allow status update")
         void setStatus_ShouldAllowStatusUpdate() {
             // Arrange
-            sut.setStatus("ACTIVE");
+            sut.setStatus(ProductStatus.ACTIVE);
 
             // Act
-            sut.setStatus("INACTIVE");
+            sut.setStatus(ProductStatus.INACTIVE);
 
             // Assert
-            assertEquals("INACTIVE", sut.getStatus());
+            assertEquals(ProductStatus.INACTIVE, sut.getStatus());
         }
     }
 
@@ -769,7 +770,7 @@ class ProductTest {
             sut.setTotal(DEFAULT_TOTAL);
             sut.setSqty(DEFAULT_SQTY);
             sut.setDuse(DEFAULT_DUSE);
-            sut.setStatus(DEFAULT_STATUS);
+            sut.setStatus(ProductStatus.ACTIVE);
 
             // Assert
             assertAll("All key fields should be correctly set",
@@ -790,7 +791,7 @@ class ProductTest {
                     () -> assertEquals(DEFAULT_TOTAL, sut.getTotal()),
                     () -> assertEquals(DEFAULT_SQTY, sut.getSqty()),
                     () -> assertEquals(DEFAULT_DUSE, sut.getDuse()),
-                    () -> assertEquals(DEFAULT_STATUS, sut.getStatus()));
+                    () -> assertEquals(ProductStatus.ACTIVE, sut.getStatus()));
         }
 
         @Test
@@ -799,18 +800,18 @@ class ProductTest {
             // Arrange
             sut.setGname("Original Name");
             sut.setSprice(new BigDecimal("100.00"));
-            sut.setStatus("ACTIVE");
+            sut.setStatus(ProductStatus.ACTIVE);
 
             // Act
             sut.setGname("Updated Name");
             sut.setSprice(new BigDecimal("150.00"));
-            sut.setStatus("DISCONTINUED");
+            sut.setStatus(ProductStatus.DISCONTINUED);
 
             // Assert
             assertAll("Fields should be updated",
                     () -> assertEquals("Updated Name", sut.getGname()),
                     () -> assertEquals(new BigDecimal("150.00"), sut.getSprice()),
-                    () -> assertEquals("DISCONTINUED", sut.getStatus()));
+                    () -> assertEquals(ProductStatus.DISCONTINUED, sut.getStatus()));
         }
 
         @Test

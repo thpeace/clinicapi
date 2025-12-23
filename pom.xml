@@ -97,6 +97,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Spring Boot Test (JUnit 5, Mockito, etc.) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
