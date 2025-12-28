@@ -38,6 +38,15 @@ public class User {
     @Column(nullable = false)
     private Boolean enabled = true;
 
+    @Column
+    private Integer failedLoginAttempts = 0;
+
+    @Column(nullable = false)
+    private Boolean accountLocked = false;
+
+    @Column
+    private LocalDateTime lockTime;
+
     // Default constructor
     public User() {
     }
@@ -104,5 +113,29 @@ public class User {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Integer getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(Integer failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    public Boolean getAccountLocked() {
+        return accountLocked;
+    }
+
+    public void setAccountLocked(Boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    public LocalDateTime getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(LocalDateTime lockTime) {
+        this.lockTime = lockTime;
     }
 }
