@@ -2,8 +2,9 @@ package com.clinic.service;
 
 import com.clinic.dto.LoginRequest;
 import com.clinic.dto.LoginResponse;
-import com.clinic.model.Role;
+import com.clinic.entity.RoleEntity;
 import com.clinic.model.User;
+import com.clinic.repository.RoleRepository;
 import com.clinic.repository.UserRepository;
 import com.clinic.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,6 +56,12 @@ class AuthServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private RoleRepository roleRepository;
+
+    @Mock
+    private LoginLogService loginLogService;
+
     @InjectMocks
     private AuthService sut;
 
@@ -61,7 +70,15 @@ class AuthServiceTest {
 
     private static final String TEST_USERNAME = "testuser";
     private static final String TEST_PASSWORD = "testpass123";
-    private static final Role TEST_ROLE = Role.USER;
+    private static final String TEST_ROLE_NAME = "USER";
+    private static final RoleEntity TEST_ROLE = new RoleEntity(TEST_ROLE_NAME, "Default user role");
+    private static final String TEST_FIRST_NAME = "John";
+    private static final String TEST_LAST_NAME = "Doe";
+    private static final String TEST_EMAIL = "john.doe@example.com";
+    private static final String TEST_PHONE = "+1234567890";
+    private static final String TEST_COUNTRY = "USA";
+    private static final String TEST_POSTAL_CODE = "12345";
+    private static final String TEST_PROVINCE = "CA";
     private static final String TEST_TOKEN = "jwt.token.here";
     private static final String ENCODED_PASSWORD = "$2a$10$encoded";
     private static final long EXPIRATION_SECONDS = 3600L;
@@ -150,6 +167,8 @@ class AuthServiceTest {
         void register_ShouldSaveUserWithEncodedPassword() {
             // Arrange
             when(userRepository.existsByUsername(TEST_USERNAME)).thenReturn(false);
+            when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.empty());
+            when(roleRepository.findByName(TEST_ROLE_NAME)).thenReturn(Optional.of(TEST_ROLE));
             when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(ENCODED_PASSWORD);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
                 User user = invocation.getArgument(0);
@@ -158,7 +177,9 @@ class AuthServiceTest {
             });
 
             // Act
-            User result = sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE);
+            User result = sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE_NAME,
+                    TEST_FIRST_NAME, TEST_LAST_NAME, TEST_EMAIL, TEST_PHONE,
+                    TEST_COUNTRY, TEST_POSTAL_CODE, TEST_PROVINCE);
 
             // Assert
             verify(userRepository).save(userCaptor.capture());
@@ -167,7 +188,10 @@ class AuthServiceTest {
             assertAll("User should be saved with correct values",
                     () -> assertEquals(TEST_USERNAME, capturedUser.getUsername()),
                     () -> assertEquals(ENCODED_PASSWORD, capturedUser.getPassword()),
-                    () -> assertEquals(TEST_ROLE, capturedUser.getRole()));
+                    () -> assertEquals(TEST_ROLE, capturedUser.getRole()),
+                    () -> assertEquals(TEST_FIRST_NAME, capturedUser.getFirstName()),
+                    () -> assertEquals(TEST_LAST_NAME, capturedUser.getLastName()),
+                    () -> assertEquals(TEST_EMAIL, capturedUser.getEmail()));
         }
 
         @Test
@@ -179,7 +203,9 @@ class AuthServiceTest {
             // Act & Assert
             RuntimeException exception = assertThrows(
                     RuntimeException.class,
-                    () -> sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE));
+                    () -> sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE_NAME,
+                            TEST_FIRST_NAME, TEST_LAST_NAME, TEST_EMAIL, TEST_PHONE,
+                            TEST_COUNTRY, TEST_POSTAL_CODE, TEST_PROVINCE));
 
             assertEquals("Username already exists", exception.getMessage());
         }
@@ -192,7 +218,9 @@ class AuthServiceTest {
 
             // Act
             try {
-                sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE);
+                sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE_NAME,
+                        TEST_FIRST_NAME, TEST_LAST_NAME, TEST_EMAIL, TEST_PHONE,
+                        TEST_COUNTRY, TEST_POSTAL_CODE, TEST_PROVINCE);
             } catch (RuntimeException ignored) {
             }
 
@@ -205,15 +233,20 @@ class AuthServiceTest {
         void register_ShouldCheckUsernameFirst() {
             // Arrange
             when(userRepository.existsByUsername(TEST_USERNAME)).thenReturn(false);
+            when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.empty());
+            when(roleRepository.findByName(TEST_ROLE_NAME)).thenReturn(Optional.of(TEST_ROLE));
             when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);
             when(userRepository.save(any())).thenReturn(new User());
 
             // Act
-            sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE);
+            sut.register(TEST_USERNAME, TEST_PASSWORD, TEST_ROLE_NAME,
+                    TEST_FIRST_NAME, TEST_LAST_NAME, TEST_EMAIL, TEST_PHONE,
+                    TEST_COUNTRY, TEST_POSTAL_CODE, TEST_PROVINCE);
 
             // Assert - verify order of operations
-            var inOrder = inOrder(userRepository, passwordEncoder);
+            var inOrder = inOrder(userRepository, roleRepository, passwordEncoder);
             inOrder.verify(userRepository).existsByUsername(TEST_USERNAME);
+            inOrder.verify(roleRepository).findByName(TEST_ROLE_NAME);
             inOrder.verify(passwordEncoder).encode(TEST_PASSWORD);
             inOrder.verify(userRepository).save(any());
         }

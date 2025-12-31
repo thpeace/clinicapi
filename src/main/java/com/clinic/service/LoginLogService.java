@@ -61,4 +61,19 @@ public class LoginLogService {
     public long countRecentFailedAttempts(String username, LocalDateTime since) {
         return loginLogRepository.countByUsernameAndSuccessAndLoginTimeAfter(username, false, since);
     }
+
+    /**
+     * Log a user logout
+     */
+    public void logLogout(String username, Long userId, String ipAddress) {
+        LoginLog log = new LoginLog();
+        log.setUsername(username);
+        log.setUserId(userId);
+        log.setLoginTime(LocalDateTime.now());
+        log.setSuccess(true);
+        log.setIpAddress(ipAddress);
+        log.setFailureReason("LOGOUT");
+        loginLogRepository.save(log);
+        logger.info("User '{}' logged out from IP: {}", username, ipAddress);
+    }
 }

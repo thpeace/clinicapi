@@ -2,21 +2,26 @@ package com.clinic.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.dto.LoginRequest;
 import com.clinic.dto.LoginResponse;
+import com.clinic.dto.SessionValidationResponse;
 import com.clinic.dto.SignupRequest;
 import com.clinic.dto.SignupResponse;
 import com.clinic.model.User;
+import com.clinic.security.JwtUtil;
 import com.clinic.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,9 +29,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class LoginController {
 
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
-    public LoginController(AuthService authService) {
+    public LoginController(AuthService authService, JwtUtil jwtUtil) {
         this.authService = authService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -41,16 +48,76 @@ public class LoginController {
 
     @PostMapping("/signup")
     @Operation(summary = "Sign up", description = "Register a new user")
-    public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
         User user = authService.register(
                 signupRequest.getUsername(),
                 signupRequest.getPassword(),
-                signupRequest.getRole());
+                signupRequest.getRoleName(),
+                signupRequest.getFirstName(),
+                signupRequest.getLastName(),
+                signupRequest.getEmail(),
+                signupRequest.getPhoneNumber(),
+                signupRequest.getCountry(),
+                signupRequest.getPostalCode(),
+                signupRequest.getProvince());
+
         SignupResponse signupResponse = SignupResponse.of(
                 user.getId(),
                 user.getUsername(),
-                user.getRole());
+                user.getRole(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getCountry(),
+                user.getPostalCode(),
+                user.getProvince());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(signupResponse);
+    }
+
+    @GetMapping("/validate")
+    @Operation(summary = "Validate session", description = "Check if the current JWT token is still valid")
+    public ResponseEntity<SessionValidationResponse> validateSession(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        // Check if Authorization header is present
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(SessionValidationResponse.invalid("No valid authorization token provided"));
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer " prefix
+
+        // Validate the token
+        if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(SessionValidationResponse.invalid("Token is invalid or expired"));
+        }
+
+        // Token is valid, get username and remaining time
+        String username = jwtUtil.getUsernameFromToken(token);
+        long expiresIn = jwtUtil.getRemainingExpirySeconds(token);
+
+        return ResponseEntity.ok(SessionValidationResponse.valid(username, expiresIn));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Logout current user and invalidate session")
+    public ResponseEntity<Void> logout(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            HttpServletRequest request) {
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            if (jwtUtil.validateToken(token)) {
+                String username = jwtUtil.getUsernameFromToken(token);
+                String ipAddress = getClientIpAddress(request);
+                authService.logout(username, ipAddress);
+            }
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     /**

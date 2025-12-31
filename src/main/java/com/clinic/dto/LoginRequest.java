@@ -1,8 +1,14 @@
 package com.clinic.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Login request payload")
 public class LoginRequest {
 
+    @Schema(description = "Username for authentication", example = "admin")
     private String username;
+
+    @Schema(description = "Password for authentication", example = "password123")
     private String password;
 
     // Default constructor

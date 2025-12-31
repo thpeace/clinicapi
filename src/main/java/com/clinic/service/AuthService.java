@@ -31,6 +31,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginLogService loginLogService;
+    private final com.clinic.repository.RoleRepository roleRepository;
 
     @Value("${security.lockout.max-attempts:5}")
     private int maxFailedAttempts;
@@ -42,12 +43,14 @@ public class AuthService {
             JwtUtil jwtUtil,
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            LoginLogService loginLogService) {
+            LoginLogService loginLogService,
+            com.clinic.repository.RoleRepository roleRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginLogService = loginLogService;
+        this.roleRepository = roleRepository;
     }
 
     /**
@@ -185,6 +188,20 @@ public class AuthService {
     }
 
     /**
+     * Logout user - clear session date and log the action
+     */
+    public void logout(String username, String ipAddress) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setSessionDate(null);
+            userRepository.save(user);
+            loginLogService.logLogout(username, user.getId(), ipAddress);
+            logger.info("User '{}' logged out from IP: {}", username, ipAddress);
+        }
+    }
+
+    /**
      * Manually unlock a user account (admin function)
      */
     public void unlockUserAccount(String username) {
@@ -196,17 +213,35 @@ public class AuthService {
     }
 
     /**
-     * Register a new user (for initial setup/testing)
+     * Register a new user
      */
-    public User register(String username, String password, Role role) {
+    public User register(String username, String password, String roleName,
+            String firstName, String lastName, String email, String phoneNumber,
+            String country, String postalCode, String province) {
+
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists");
         }
 
+        if (email != null && !email.isEmpty() && userRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Lookup role by name
+        com.clinic.entity.RoleEntity role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password)); // BCrypt hash
+        user.setPassword(passwordEncoder.encode(password));
         user.setRole(role);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setCountry(country);
+        user.setPostalCode(postalCode);
+        user.setProvince(province);
 
         return userRepository.save(user);
     }

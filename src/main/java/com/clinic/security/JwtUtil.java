@@ -86,4 +86,23 @@ public class JwtUtil {
     public long getExpirationInSeconds() {
         return expiration / 1000;
     }
+
+    /**
+     * Get remaining expiry time in seconds from a token
+     */
+    public long getRemainingExpirySeconds(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            Date expiryDate = claims.getExpiration();
+            long remainingMs = expiryDate.getTime() - System.currentTimeMillis();
+            return Math.max(0, remainingMs / 1000);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

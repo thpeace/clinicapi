@@ -1,11 +1,11 @@
 package com.clinic.model;
 
+import com.clinic.entity.RoleEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,7 +34,7 @@ class UserTest {
     private static final Long DEFAULT_ID = 1L;
     private static final String DEFAULT_USERNAME = "testuser";
     private static final String DEFAULT_PASSWORD = "securePassword123";
-    private static final Role DEFAULT_ROLE = Role.USER;
+    private static final RoleEntity DEFAULT_ROLE = new RoleEntity("USER", "Default user role");
 
     @BeforeEach
     void setUp() {
@@ -187,10 +187,12 @@ class UserTest {
     @DisplayName("Role Field Tests")
     class RoleTests {
 
-        @ParameterizedTest(name = "Role ''{0}'' should be accepted")
-        @EnumSource(Role.class)
-        @DisplayName("setRole should accept all Role enum values")
-        void setRole_ShouldAcceptValidRoles(Role role) {
+        @Test
+        @DisplayName("setRole should accept RoleEntity")
+        void setRole_ShouldAcceptValidRoles() {
+            // Arrange
+            RoleEntity role = new RoleEntity("ADMIN", "Administrator role");
+
             // Act
             sut.setRole(role);
 
@@ -202,13 +204,15 @@ class UserTest {
         @DisplayName("setRole should allow role update")
         void setRole_ShouldAllowRoleUpdate() {
             // Arrange
-            sut.setRole(Role.USER);
+            RoleEntity userRole = new RoleEntity("USER", "User role");
+            RoleEntity adminRole = new RoleEntity("ADMIN", "Admin role");
+            sut.setRole(userRole);
 
             // Act
-            sut.setRole(Role.ADMIN);
+            sut.setRole(adminRole);
 
             // Assert
-            assertEquals(Role.ADMIN, sut.getRole());
+            assertEquals(adminRole, sut.getRole());
         }
     }
 
@@ -280,18 +284,20 @@ class UserTest {
         @DisplayName("User created via constructor should allow field updates")
         void userCreatedViaConstructor_ShouldAllowFieldUpdates() {
             // Arrange
-            User user = new User("original", "pass", Role.USER);
+            RoleEntity userRole = new RoleEntity("USER", "User role");
+            RoleEntity adminRole = new RoleEntity("ADMIN", "Admin role");
+            User user = new User("original", "pass", userRole);
 
             // Act
             user.setUsername("updated");
             user.setPassword("newpass");
-            user.setRole(Role.ADMIN);
+            user.setRole(adminRole);
 
             // Assert
             assertAll("Fields should be updated",
                     () -> assertEquals("updated", user.getUsername()),
                     () -> assertEquals("newpass", user.getPassword()),
-                    () -> assertEquals(Role.ADMIN, user.getRole()));
+                    () -> assertEquals(adminRole, user.getRole()));
         }
     }
 }
