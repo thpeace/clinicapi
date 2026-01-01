@@ -47,6 +47,9 @@ public class User {
     @Column(length = 20)
     private String phoneNumber;
 
+    @Column(length = 500)
+    private String profilePicture;
+
     // Address Information
     @Column(length = 100)
     private String country;
@@ -158,6 +161,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public String getCountry() {
