@@ -4,7 +4,9 @@ import com.clinic.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    // You can add custom queries if needed
+    long countByDatBetween(LocalDateTime start, LocalDateTime end);
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -680,5 +679,13 @@ public class Patient implements Serializable {
 
     public void setDrugeanti(String drugeanti) {
         this.drugeanti = drugeanti;
+    }
+
+    public String getClinicname() {
+        return clinicname;
+    }
+
+    public void setClinicname(String clinicname) {
+        this.clinicname = clinicname;
     }
 }
