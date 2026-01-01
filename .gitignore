@@ -61,3 +61,7 @@ build/
 
 ## scripts ##
 scripts/
+
+
+# Java version
+.java-version
