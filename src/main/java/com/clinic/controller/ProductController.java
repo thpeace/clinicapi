@@ -3,6 +3,7 @@ package com.clinic.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.clinic.dto.ProductResponse;
 import com.clinic.model.Product;
 import com.clinic.repository.ProductRepository;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
+@Tag(name = "Products", description = "Product management endpoints")
 public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 

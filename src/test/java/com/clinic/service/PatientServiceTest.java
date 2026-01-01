@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -151,6 +152,47 @@ class PatientServiceTest {
             // Assert
             assertNotNull(result.getId());
             assertEquals(100L, result.getId());
+        }
+    }
+
+    @Nested
+    @DisplayName("getTotalPatients Tests")
+    class GetTotalPatientsTests {
+
+        @Test
+        @DisplayName("getTotalPatients should return count from repository")
+        void getTotalPatients_ShouldReturnCount() {
+            // Arrange
+            long expectedCount = 5L;
+            when(patientRepository.count()).thenReturn(expectedCount);
+
+            // Act
+            long result = sut.getTotalPatients();
+
+            // Assert
+            assertEquals(expectedCount, result);
+            verify(patientRepository).count();
+        }
+    }
+
+    @Nested
+    @DisplayName("getTotalPatientsToday Tests")
+    class GetTotalPatientsTodayTests {
+
+        @Test
+        @DisplayName("getTotalPatientsToday should call repository with correct date range")
+        void getTotalPatientsToday_ShouldCallRepository() {
+            // Arrange
+            long expectedCount = 3L;
+            when(patientRepository.countByDatBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
+                    .thenReturn(expectedCount);
+
+            // Act
+            long result = sut.getTotalPatientsToday();
+
+            // Assert
+            assertEquals(expectedCount, result);
+            verify(patientRepository).countByDatBetween(any(LocalDateTime.class), any(LocalDateTime.class));
         }
     }
 }
