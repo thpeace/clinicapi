@@ -28,7 +28,7 @@ public class Product implements Serializable {
     private Long id;
 
     // ===== Identification =====
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String did;
 
     @Column(unique = true, length = 100)
