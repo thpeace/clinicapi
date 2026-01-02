@@ -9,6 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ErrorResponse {
 
+    // Error code constants
+    private static final String ERROR_CODE_ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
+    private static final String ERROR_CODE_INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
+
+    // Error message constants
+    private static final String MSG_INVALID_CREDENTIALS = "Invalid username or password.";
+    private static final String MSG_ACCOUNT_LOCKED = "Your account has been locked due to too many failed login attempts.";
+
     @Schema(description = "Error code for programmatic handling", example = "ACCOUNT_LOCKED")
     private String errorCode;
 
@@ -35,29 +43,29 @@ public class ErrorResponse {
     // Static factory methods
     public static ErrorResponse accountLocked(int remainingMinutes) {
         return new ErrorResponse(
-                "ACCOUNT_LOCKED",
-                "Your account has been locked due to too many failed login attempts.",
+                ERROR_CODE_ACCOUNT_LOCKED,
+                MSG_ACCOUNT_LOCKED,
                 "Please try again in " + remainingMinutes + " minutes or contact support.");
     }
 
     public static ErrorResponse invalidCredentials(int remainingAttempts) {
         if (remainingAttempts > 0) {
             return new ErrorResponse(
-                    "INVALID_CREDENTIALS",
-                    "Invalid username or password.",
+                    ERROR_CODE_INVALID_CREDENTIALS,
+                    MSG_INVALID_CREDENTIALS,
                     "You have " + remainingAttempts + " attempt(s) remaining before your account is locked.");
         } else {
             return new ErrorResponse(
-                    "INVALID_CREDENTIALS",
-                    "Invalid username or password.",
+                    ERROR_CODE_INVALID_CREDENTIALS,
+                    MSG_INVALID_CREDENTIALS,
                     null);
         }
     }
 
     public static ErrorResponse userNotFound() {
         return new ErrorResponse(
-                "INVALID_CREDENTIALS",
-                "Invalid username or password.",
+                ERROR_CODE_INVALID_CREDENTIALS,
+                MSG_INVALID_CREDENTIALS,
                 null);
     }
 }
