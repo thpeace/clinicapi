@@ -2,6 +2,7 @@ package com.clinic.service;
 
 import com.clinic.model.DrugType;
 import com.clinic.repository.DrugTypeRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +24,16 @@ public class DrugTypeService {
         return drugTypeRepository.findByActiveTrue();
     }
 
-    public DrugType getDrugTypeById(Long id) {
+    public DrugType getDrugTypeById(@NonNull Long id) {
         return drugTypeRepository.findById(id).orElse(null);
     }
 
-    public DrugType saveDrugType(DrugType drugType) {
+    @NonNull
+    public DrugType saveDrugType(@NonNull DrugType drugType) {
         return drugTypeRepository.save(drugType);
     }
 
-    public DrugType updateDrugType(Long id, DrugType drugTypeDetails) {
+    public DrugType updateDrugType(@NonNull Long id, DrugType drugTypeDetails) {
         DrugType drugType = drugTypeRepository.findById(id).orElse(null);
         if (drugType != null) {
             drugType.setNameTh(drugTypeDetails.getNameTh());
@@ -43,7 +45,7 @@ public class DrugTypeService {
         return null;
     }
 
-    public void deleteDrugType(Long id) {
+    public void deleteDrugType(@NonNull Long id) {
         drugTypeRepository.deleteById(id);
     }
 }

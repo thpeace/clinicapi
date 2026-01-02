@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PatientService {
@@ -22,8 +23,9 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
+    @SuppressWarnings("null")
     public Patient savePatient(Patient patient) {
-        return patientRepository.save(patient);
+        return Objects.requireNonNull(patientRepository.save(patient));
     }
 
     public long getTotalPatients() {

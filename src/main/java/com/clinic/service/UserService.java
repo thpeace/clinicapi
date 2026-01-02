@@ -2,6 +2,7 @@ package com.clinic.service;
 
 import java.util.Optional;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.clinic.model.User;
@@ -19,7 +20,7 @@ public class UserService {
     /**
      * Find user by ID
      */
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(@NonNull Long id) {
         return userRepository.findById(id);
     }
 

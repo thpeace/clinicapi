@@ -2,6 +2,7 @@ package com.clinic.service;
 
 import com.clinic.model.ServiceGroup;
 import com.clinic.repository.ServiceGroupRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +24,16 @@ public class ServiceGroupService {
         return serviceGroupRepository.findByActiveTrue();
     }
 
-    public ServiceGroup getServiceGroupById(Long id) {
+    public ServiceGroup getServiceGroupById(@NonNull Long id) {
         return serviceGroupRepository.findById(id).orElse(null);
     }
 
+    @NonNull
     public ServiceGroup saveServiceGroup(ServiceGroup serviceGroup) {
         return serviceGroupRepository.save(serviceGroup);
     }
 
-    public ServiceGroup updateServiceGroup(Long id, ServiceGroup serviceGroupDetails) {
+    public ServiceGroup updateServiceGroup(@NonNull Long id, ServiceGroup serviceGroupDetails) {
         ServiceGroup serviceGroup = serviceGroupRepository.findById(id).orElse(null);
         if (serviceGroup != null) {
             serviceGroup.setNameTh(serviceGroupDetails.getNameTh());
@@ -43,7 +45,7 @@ public class ServiceGroupService {
         return null;
     }
 
-    public void deleteServiceGroup(Long id) {
+    public void deleteServiceGroup(@NonNull Long id) {
         serviceGroupRepository.deleteById(id);
     }
 }

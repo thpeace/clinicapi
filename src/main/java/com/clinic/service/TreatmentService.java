@@ -3,6 +3,7 @@ package com.clinic.service;
 import com.clinic.dto.request.TreatmentImportDto;
 import com.clinic.model.Treatment;
 import com.clinic.repository.TreatmentRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public class TreatmentService {
         return treatmentRepository.findByStatus("Y");
     }
 
-    public Treatment getTreatmentById(Long id) {
+    public Treatment getTreatmentById(@NonNull Long id) {
         return treatmentRepository.findById(id).orElse(null);
     }
 
@@ -34,11 +35,11 @@ public class TreatmentService {
         return treatmentRepository.findByTid(tid).orElse(null);
     }
 
-    public Treatment saveTreatment(Treatment treatment) {
+    public Treatment saveTreatment(@NonNull Treatment treatment) {
         return treatmentRepository.save(treatment);
     }
 
-    public Treatment updateTreatment(Long id, Treatment treatmentDetails) {
+    public Treatment updateTreatment(@NonNull Long id, Treatment treatmentDetails) {
         Treatment treatment = treatmentRepository.findById(id).orElse(null);
         if (treatment != null) {
             treatment.setTid(treatmentDetails.getTid());
@@ -75,7 +76,7 @@ public class TreatmentService {
         return null;
     }
 
-    public void deleteTreatment(Long id) {
+    public void deleteTreatment(@NonNull Long id) {
         treatmentRepository.deleteById(id);
     }
 

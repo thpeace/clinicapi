@@ -85,10 +85,15 @@ Access API documentation at: `http://localhost:8080/swagger-ui.html`
 ```
 src/main/java/com/clinic/
 ├── config/          # Security & Swagger configuration
+├── constant/        # Application constants & error codes
 ├── controller/      # REST controllers
-├── dto/             # Request/Response DTOs
+├── dto/
+│   ├── request/     # Request DTOs
+│   └── response/    # Response DTOs
+├── exception/       # Custom exceptions & handlers
 ├── model/           # JPA entities
 ├── repository/      # Spring Data JPA repositories
 ├── security/        # JWT & authentication filters
-└── service/         # Business logic
+├── service/         # Business logic
+└── util/            # Utility classes
 ```

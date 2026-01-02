@@ -2,6 +2,7 @@ package com.clinic.service;
 
 import com.clinic.model.Procedure;
 import com.clinic.repository.ProcedureRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +24,16 @@ public class ProcedureService {
         return procedureRepository.findByActiveTrue();
     }
 
-    public Procedure getProcedureById(Long id) {
+    public Procedure getProcedureById(@NonNull Long id) {
         return procedureRepository.findById(id).orElse(null);
     }
 
-    public Procedure saveProcedure(Procedure procedure) {
+    @NonNull
+    public Procedure saveProcedure(@NonNull Procedure procedure) {
         return procedureRepository.save(procedure);
     }
 
-    public Procedure updateProcedure(Long id, Procedure procedureDetails) {
+    public Procedure updateProcedure(@NonNull Long id, Procedure procedureDetails) {
         Procedure procedure = procedureRepository.findById(id).orElse(null);
         if (procedure != null) {
             procedure.setNameTh(procedureDetails.getNameTh());
@@ -44,7 +46,7 @@ public class ProcedureService {
         return null;
     }
 
-    public void deleteProcedure(Long id) {
+    public void deleteProcedure(@NonNull Long id) {
         procedureRepository.deleteById(id);
     }
 }

@@ -3,6 +3,7 @@ package com.clinic.controller;
 import com.clinic.model.DrugType;
 import com.clinic.service.DrugTypeService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class DrugTypeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrugType> getDrugTypeById(@PathVariable Long id) {
+    public ResponseEntity<DrugType> getDrugTypeById(@PathVariable @NonNull Long id) {
         DrugType drugType = drugTypeService.getDrugTypeById(id);
         if (drugType != null) {
             return ResponseEntity.ok(drugType);
@@ -33,12 +34,13 @@ public class DrugTypeController {
     }
 
     @PostMapping
-    public DrugType createDrugType(@RequestBody DrugType drugType) {
+    public @NonNull DrugType createDrugType(@RequestBody @NonNull DrugType drugType) {
         return drugTypeService.saveDrugType(drugType);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DrugType> updateDrugType(@PathVariable Long id, @RequestBody DrugType drugTypeDetails) {
+    public ResponseEntity<DrugType> updateDrugType(@PathVariable @NonNull Long id,
+            @RequestBody DrugType drugTypeDetails) {
         DrugType updatedDrugType = drugTypeService.updateDrugType(id, drugTypeDetails);
         if (updatedDrugType != null) {
             return ResponseEntity.ok(updatedDrugType);
@@ -47,7 +49,7 @@ public class DrugTypeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrugType(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDrugType(@PathVariable @NonNull Long id) {
         drugTypeService.deleteDrugType(id);
         return ResponseEntity.ok().build();
     }

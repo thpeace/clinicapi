@@ -2,9 +2,9 @@ package com.clinic.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.clinic.model.LoginLog;
@@ -24,6 +24,7 @@ public class LoginLogService {
     /**
      * Log a successful login attempt
      */
+    @NonNull
     public LoginLog logSuccessfulLogin(String username, Long userId, String ipAddress, String userAgent) {
         LoginLog log = LoginLog.success(username, userId, ipAddress, userAgent);
         LoginLog saved = loginLogRepository.save(log);
@@ -34,6 +35,7 @@ public class LoginLogService {
     /**
      * Log a failed login attempt
      */
+    @NonNull
     public LoginLog logFailedLogin(String username, Long userId, String ipAddress, String userAgent, String reason) {
         LoginLog log = LoginLog.failure(username, userId, ipAddress, userAgent, reason);
         LoginLog saved = loginLogRepository.save(log);

@@ -3,6 +3,7 @@ package com.clinic.controller;
 import com.clinic.model.Procedure;
 import com.clinic.service.ProcedureService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class ProcedureController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Procedure> getProcedureById(@PathVariable Long id) {
+    public ResponseEntity<Procedure> getProcedureById(@PathVariable @NonNull Long id) {
         Procedure procedure = procedureService.getProcedureById(id);
         if (procedure != null) {
             return ResponseEntity.ok(procedure);
@@ -43,7 +44,8 @@ public class ProcedureController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Procedure> updateProcedure(@PathVariable Long id, @RequestBody Procedure procedureDetails) {
+    public ResponseEntity<Procedure> updateProcedure(@PathVariable @NonNull Long id,
+            @RequestBody Procedure procedureDetails) {
         Procedure updatedProcedure = procedureService.updateProcedure(id, procedureDetails);
         if (updatedProcedure != null) {
             return ResponseEntity.ok(updatedProcedure);
@@ -52,7 +54,7 @@ public class ProcedureController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProcedure(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProcedure(@PathVariable @NonNull Long id) {
         procedureService.deleteProcedure(id);
         return ResponseEntity.ok().build();
     }

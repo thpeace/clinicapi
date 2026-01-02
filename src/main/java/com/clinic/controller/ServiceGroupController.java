@@ -3,6 +3,7 @@ package com.clinic.controller;
 import com.clinic.model.ServiceGroup;
 import com.clinic.service.ServiceGroupService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ServiceGroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ServiceGroup> getServiceGroupById(@PathVariable Long id) {
+    public ResponseEntity<ServiceGroup> getServiceGroupById(@PathVariable @NonNull Long id) {
         ServiceGroup serviceGroup = serviceGroupService.getServiceGroupById(id);
         if (serviceGroup != null) {
             return ResponseEntity.ok(serviceGroup);
@@ -38,7 +39,7 @@ public class ServiceGroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceGroup> updateServiceGroup(@PathVariable Long id,
+    public ResponseEntity<ServiceGroup> updateServiceGroup(@PathVariable @NonNull Long id,
             @RequestBody ServiceGroup serviceGroupDetails) {
         ServiceGroup updatedServiceGroup = serviceGroupService.updateServiceGroup(id, serviceGroupDetails);
         if (updatedServiceGroup != null) {
@@ -48,7 +49,7 @@ public class ServiceGroupController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteServiceGroup(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteServiceGroup(@PathVariable @NonNull Long id) {
         serviceGroupService.deleteServiceGroup(id);
         return ResponseEntity.ok().build();
     }

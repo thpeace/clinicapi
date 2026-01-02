@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.lang.NonNull;
 
 import com.clinic.dto.response.UserDetailResponse;
 import com.clinic.service.UserService;
@@ -79,7 +80,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<UserDetailResponse> getUserById(
-            @Parameter(description = "User ID") @PathVariable Long id) {
+            @Parameter(description = "User ID") @PathVariable @NonNull Long id) {
 
         // Get authentication from SecurityContext (set by JwtAuthenticationFilter)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

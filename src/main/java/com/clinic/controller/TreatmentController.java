@@ -4,6 +4,7 @@ import com.clinic.dto.request.TreatmentImportRequest;
 import com.clinic.model.Treatment;
 import com.clinic.service.TreatmentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class TreatmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Treatment> getTreatmentById(@PathVariable Long id) {
+    public ResponseEntity<Treatment> getTreatmentById(@PathVariable @NonNull Long id) {
         Treatment treatment = treatmentService.getTreatmentById(id);
         if (treatment != null) {
             return ResponseEntity.ok(treatment);
@@ -48,12 +49,13 @@ public class TreatmentController {
     }
 
     @PostMapping
-    public Treatment createTreatment(@RequestBody Treatment treatment) {
+    public Treatment createTreatment(@RequestBody @NonNull Treatment treatment) {
         return treatmentService.saveTreatment(treatment);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Treatment> updateTreatment(@PathVariable Long id, @RequestBody Treatment treatmentDetails) {
+    public ResponseEntity<Treatment> updateTreatment(@PathVariable @NonNull Long id,
+            @RequestBody Treatment treatmentDetails) {
         Treatment updatedTreatment = treatmentService.updateTreatment(id, treatmentDetails);
         if (updatedTreatment != null) {
             return ResponseEntity.ok(updatedTreatment);
@@ -62,7 +64,7 @@ public class TreatmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTreatment(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTreatment(@PathVariable @NonNull Long id) {
         treatmentService.deleteTreatment(id);
         return ResponseEntity.ok().build();
     }
