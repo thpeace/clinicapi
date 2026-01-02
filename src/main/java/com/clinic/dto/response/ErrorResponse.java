@@ -1,5 +1,6 @@
 package com.clinic.dto.response;
 
+import static com.clinic.constant.ErrorConstants.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,14 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ErrorResponse {
-
-    // Error code constants
-    private static final String ERROR_CODE_ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
-    private static final String ERROR_CODE_INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
-
-    // Error message constants
-    private static final String MSG_INVALID_CREDENTIALS = "Invalid username or password.";
-    private static final String MSG_ACCOUNT_LOCKED = "Your account has been locked due to too many failed login attempts.";
 
     @Schema(description = "Error code for programmatic handling", example = "ACCOUNT_LOCKED")
     private String errorCode;

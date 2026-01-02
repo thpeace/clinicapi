@@ -1,5 +1,7 @@
 package com.clinic.config;
 
+import static com.clinic.constant.ConfigConstants.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,13 +21,13 @@ public class RoleDataInitializer {
         return args -> {
             logger.info("Initializing roles...");
 
-            createRoleIfNotExists(roleRepository, "ADMIN", "Administrator with full access");
-            createRoleIfNotExists(roleRepository, "DOCTOR", "Medical doctor");
-            createRoleIfNotExists(roleRepository, "NURSE", "Nursing staff");
-            createRoleIfNotExists(roleRepository, "RECEPTIONIST", "Front desk receptionist");
-            createRoleIfNotExists(roleRepository, "PHARMACIST", "Pharmacy staff");
-            createRoleIfNotExists(roleRepository, "LAB_TECHNICIAN", "Laboratory technician");
-            createRoleIfNotExists(roleRepository, "USER", "Standard user");
+            createRoleIfNotExists(roleRepository, ROLE_ADMIN, ROLE_ADMIN_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_DOCTOR, ROLE_DOCTOR_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_NURSE, ROLE_NURSE_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_RECEPTIONIST, ROLE_RECEPTIONIST_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_PHARMACIST, ROLE_PHARMACIST_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_LAB_TECHNICIAN, ROLE_LAB_TECHNICIAN_DESC);
+            createRoleIfNotExists(roleRepository, ROLE_USER, ROLE_USER_DESC);
 
             logger.info("Roles initialization completed. Total roles: {}", roleRepository.count());
         };

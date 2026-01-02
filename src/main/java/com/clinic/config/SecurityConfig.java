@@ -1,5 +1,7 @@
 package com.clinic.config;
 
+import static com.clinic.constant.ConfigConstants.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +38,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.addAllowedOrigin("http://localhost:5173");
+                    corsConfig.addAllowedOrigin(CORS_ALLOWED_ORIGIN);
                     corsConfig.addAllowedMethod("*");
                     corsConfig.addAllowedHeader("*");
                     corsConfig.setAllowCredentials(true);
@@ -46,9 +48,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - no authentication required
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .requestMatchers(AUTH_PATH_PATTERN).permitAll()
+                        .requestMatchers(SWAGGER_UI_PATH_PATTERN, SWAGGER_UI_HTML_PATH).permitAll()
+                        .requestMatchers(API_DOCS_PATH_PATTERN, SWAGGER_RESOURCES_PATH_PATTERN).permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
