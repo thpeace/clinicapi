@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
@@ -38,14 +38,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String jwt = getJwtFromRequest(request);
-            logger.debug("Processing request: {} {}", request.getMethod(), request.getRequestURI());
+            log.debug("Processing request: {} {}", request.getMethod(), request.getRequestURI());
 
             if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
                 String username = jwtUtil.getUsernameFromToken(jwt);
-                logger.debug("Valid JWT token for user: {}", username);
+                log.debug("Valid JWT token for user: {}", username);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                logger.debug("User details loaded, authorities: {}", userDetails.getAuthorities());
+                log.debug("User details loaded, authorities: {}", userDetails.getAuthorities());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -54,12 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.debug("Authentication set in SecurityContext for user: {}", username);
+                log.debug("Authentication set in SecurityContext for user: {}", username);
             } else if (StringUtils.hasText(jwt)) {
-                logger.warn("Invalid JWT token received");
+                log.warn("Invalid JWT token received");
             }
         } catch (Exception e) {
-            logger.error("Could not set user authentication in security context", e);
+            log.error("Could not set user authentication in security context", e);
         }
 
         filterChain.doFilter(request, response);

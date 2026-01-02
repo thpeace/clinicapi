@@ -1,8 +1,12 @@
 package com.clinic.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Schema(description = "Error response payload")
+@Data
+@NoArgsConstructor
 public class ErrorResponse {
 
     @Schema(description = "Error code for programmatic handling", example = "ACCOUNT_LOCKED")
@@ -15,16 +19,12 @@ public class ErrorResponse {
     private String details;
 
     @Schema(description = "Timestamp of the error", example = "2024-12-31T22:30:00")
-    private String timestamp;
-
-    public ErrorResponse() {
-        this.timestamp = java.time.LocalDateTime.now().toString();
-    }
+    private String timestamp = java.time.LocalDateTime.now().toString();
 
     public ErrorResponse(String errorCode, String message) {
-        this();
         this.errorCode = errorCode;
         this.message = message;
+        this.timestamp = java.time.LocalDateTime.now().toString();
     }
 
     public ErrorResponse(String errorCode, String message, String details) {
@@ -59,38 +59,5 @@ public class ErrorResponse {
                 "INVALID_CREDENTIALS",
                 "Invalid username or password.",
                 null);
-    }
-
-    // Getters and Setters
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 }

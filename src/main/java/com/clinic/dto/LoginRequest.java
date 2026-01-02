@@ -1,8 +1,14 @@
 package com.clinic.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Schema(description = "Login request payload")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
 
     @Schema(description = "Username for authentication", example = "admin")
@@ -10,31 +16,4 @@ public class LoginRequest {
 
     @Schema(description = "Password for authentication", example = "password123")
     private String password;
-
-    // Default constructor
-    public LoginRequest() {
-    }
-
-    // Constructor with fields
-    public LoginRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    // Getters and Setters
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
