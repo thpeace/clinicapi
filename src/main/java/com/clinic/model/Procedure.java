@@ -32,6 +32,7 @@ public class Procedure implements Serializable {
     @Column(length = 50)
     private String unit;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean active = true;
 
