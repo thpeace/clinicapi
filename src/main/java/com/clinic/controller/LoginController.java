@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.clinic.dto.LoginRequest;
-import com.clinic.dto.LoginResponse;
-import com.clinic.dto.SessionValidationResponse;
-import com.clinic.dto.SignupRequest;
-import com.clinic.dto.SignupResponse;
+import com.clinic.dto.request.LoginRequest;
+import com.clinic.dto.request.SignupRequest;
+import com.clinic.dto.response.LoginResponse;
+import com.clinic.dto.response.SessionValidationResponse;
+import com.clinic.dto.response.SignupResponse;
 import com.clinic.model.User;
 import com.clinic.security.JwtUtil;
 import com.clinic.service.AuthService;

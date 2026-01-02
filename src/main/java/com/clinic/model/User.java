@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.clinic.entity.RoleEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -92,7 +90,7 @@ public class User {
     }
 
     // Constructor with fields
-    public User(String username, String password, com.clinic.entity.RoleEntity role) {
+    public User(String username, String password, RoleEntity role) {
         this.username = username;
         this.password = password;
         this.role = role;

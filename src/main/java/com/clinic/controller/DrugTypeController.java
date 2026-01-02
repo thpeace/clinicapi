@@ -2,7 +2,6 @@ package com.clinic.controller;
 
 import com.clinic.model.DrugType;
 import com.clinic.service.DrugTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DrugTypeController {
 
-    @Autowired
-    private DrugTypeService drugTypeService;
+    private final DrugTypeService drugTypeService;
+
+    public DrugTypeController(DrugTypeService drugTypeService) {
+        this.drugTypeService = drugTypeService;
+    }
 
     @GetMapping
     public List<DrugType> getAllDrugTypes() {

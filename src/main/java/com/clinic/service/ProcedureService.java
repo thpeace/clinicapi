@@ -2,7 +2,6 @@ package com.clinic.service;
 
 import com.clinic.model.Procedure;
 import com.clinic.repository.ProcedureRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class ProcedureService {
 
-    @Autowired
-    private ProcedureRepository procedureRepository;
+    private final ProcedureRepository procedureRepository;
+
+    public ProcedureService(ProcedureRepository procedureRepository) {
+        this.procedureRepository = procedureRepository;
+    }
 
     public List<Procedure> getAllProcedures() {
         return procedureRepository.findAll();

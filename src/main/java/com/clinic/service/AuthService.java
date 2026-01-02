@@ -14,9 +14,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.clinic.dto.LoginRequest;
-import com.clinic.dto.LoginResponse;
+import com.clinic.dto.request.LoginRequest;
+import com.clinic.dto.response.LoginResponse;
+import com.clinic.model.RoleEntity;
 import com.clinic.model.User;
+import com.clinic.repository.RoleRepository;
 import com.clinic.repository.UserRepository;
 import com.clinic.security.JwtUtil;
 
@@ -30,7 +32,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginLogService loginLogService;
-    private final com.clinic.repository.RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Value("${security.lockout.max-attempts:5}")
     private int maxFailedAttempts;
@@ -43,7 +45,7 @@ public class AuthService {
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             LoginLogService loginLogService,
-            com.clinic.repository.RoleRepository roleRepository) {
+            RoleRepository roleRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -227,7 +229,7 @@ public class AuthService {
         }
 
         // Lookup role by name
-        com.clinic.entity.RoleEntity role = roleRepository.findByName(roleName)
+        RoleEntity role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
 
         User user = new User();

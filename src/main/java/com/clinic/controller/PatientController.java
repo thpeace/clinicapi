@@ -3,10 +3,9 @@ package com.clinic.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.clinic.dto.PatientResponse;
+import com.clinic.dto.response.PatientResponse;
 import com.clinic.model.Patient;
 import com.clinic.service.PatientService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +20,11 @@ public class PatientController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
-    @Autowired
-    private PatientService patientService;
+    private final PatientService patientService;
+
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
+    }
 
     @PostMapping("/import")
     public String importPatients(@RequestBody PatientResponse patientResponse) {

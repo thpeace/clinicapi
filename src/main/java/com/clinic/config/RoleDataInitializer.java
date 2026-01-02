@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.clinic.entity.RoleEntity;
+import com.clinic.model.RoleEntity;
 import com.clinic.repository.RoleRepository;
 
 @Configuration

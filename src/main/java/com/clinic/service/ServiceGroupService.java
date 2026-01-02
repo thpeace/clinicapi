@@ -2,7 +2,6 @@ package com.clinic.service;
 
 import com.clinic.model.ServiceGroup;
 import com.clinic.repository.ServiceGroupRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class ServiceGroupService {
 
-    @Autowired
-    private ServiceGroupRepository serviceGroupRepository;
+    private final ServiceGroupRepository serviceGroupRepository;
+
+    public ServiceGroupService(ServiceGroupRepository serviceGroupRepository) {
+        this.serviceGroupRepository = serviceGroupRepository;
+    }
 
     public List<ServiceGroup> getAllServiceGroups() {
         return serviceGroupRepository.findAll();

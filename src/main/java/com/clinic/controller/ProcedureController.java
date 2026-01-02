@@ -2,7 +2,6 @@ package com.clinic.controller;
 
 import com.clinic.model.Procedure;
 import com.clinic.service.ProcedureService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProcedureController {
 
-    @Autowired
-    private ProcedureService procedureService;
+    private final ProcedureService procedureService;
+
+    public ProcedureController(ProcedureService procedureService) {
+        this.procedureService = procedureService;
+    }
 
     @GetMapping
     public List<Procedure> getAllProcedures() {

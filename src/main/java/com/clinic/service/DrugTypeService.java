@@ -2,7 +2,6 @@ package com.clinic.service;
 
 import com.clinic.model.DrugType;
 import com.clinic.repository.DrugTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class DrugTypeService {
 
-    @Autowired
-    private DrugTypeRepository drugTypeRepository;
+    private final DrugTypeRepository drugTypeRepository;
+
+    public DrugTypeService(DrugTypeRepository drugTypeRepository) {
+        this.drugTypeRepository = drugTypeRepository;
+    }
 
     public List<DrugType> getAllDrugTypes() {
         return drugTypeRepository.findAll();

@@ -1,9 +1,8 @@
 package com.clinic.service;
 
-import com.clinic.dto.TreatmentImportDto;
+import com.clinic.dto.request.TreatmentImportDto;
 import com.clinic.model.Treatment;
 import com.clinic.repository.TreatmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,8 +12,11 @@ import java.util.List;
 @Service
 public class TreatmentService {
 
-    @Autowired
-    private TreatmentRepository treatmentRepository;
+    private final TreatmentRepository treatmentRepository;
+
+    public TreatmentService(TreatmentRepository treatmentRepository) {
+        this.treatmentRepository = treatmentRepository;
+    }
 
     public List<Treatment> getAllTreatments() {
         return treatmentRepository.findAll();

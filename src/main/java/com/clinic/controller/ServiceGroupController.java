@@ -2,7 +2,6 @@ package com.clinic.controller;
 
 import com.clinic.model.ServiceGroup;
 import com.clinic.service.ServiceGroupService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ServiceGroupController {
 
-    @Autowired
-    private ServiceGroupService serviceGroupService;
+    private final ServiceGroupService serviceGroupService;
+
+    public ServiceGroupController(ServiceGroupService serviceGroupService) {
+        this.serviceGroupService = serviceGroupService;
+    }
 
     @GetMapping
     public List<ServiceGroup> getAllServiceGroups() {

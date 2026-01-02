@@ -1,9 +1,8 @@
 package com.clinic.controller;
 
-import com.clinic.dto.TreatmentImportRequest;
+import com.clinic.dto.request.TreatmentImportRequest;
 import com.clinic.model.Treatment;
 import com.clinic.service.TreatmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TreatmentController {
 
-    @Autowired
-    private TreatmentService treatmentService;
+    private final TreatmentService treatmentService;
+
+    public TreatmentController(TreatmentService treatmentService) {
+        this.treatmentService = treatmentService;
+    }
 
     @GetMapping
     public List<Treatment> getAllTreatments() {

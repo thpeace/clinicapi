@@ -1,6 +1,5 @@
 package com.clinic.model;
 
-import com.clinic.entity.RoleEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
