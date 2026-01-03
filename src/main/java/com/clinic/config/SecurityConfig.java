@@ -42,7 +42,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.addAllowedOrigin(allowedOrigins);
+                    // Support multiple comma-separated origins from config/Vault
+                    for (String origin : allowedOrigins.split(",")) {
+                        corsConfig.addAllowedOrigin(origin.trim());
+                    }
                     corsConfig.addAllowedMethod("*");
                     corsConfig.addAllowedHeader("*");
                     corsConfig.setAllowCredentials(true);
