@@ -24,7 +24,6 @@ public class LoginLogService {
     /**
      * Log a successful login attempt
      */
-    @NonNull
     public LoginLog logSuccessfulLogin(String username, Long userId, String ipAddress, String userAgent) {
         LoginLog log = LoginLog.success(username, userId, ipAddress, userAgent);
         LoginLog saved = loginLogRepository.save(log);

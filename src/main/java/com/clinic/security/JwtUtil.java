@@ -29,14 +29,15 @@ public class JwtUtil {
     }
 
     /**
-     * Generate a JWT token for the given username
+     * Generate a JWT token for the given username and role
      */
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(secretKey)

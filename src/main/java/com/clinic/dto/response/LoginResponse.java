@@ -13,9 +13,10 @@ public class LoginResponse {
     private String type;
     private long expiresIn;
     private String username;
+    private String role;
 
     // Builder-style static method
-    public static LoginResponse of(String token, long expiresIn, String username) {
-        return new LoginResponse(token, "Bearer", expiresIn, username);
+    public static LoginResponse of(String token, long expiresIn, String username, String role) {
+        return new LoginResponse(token, "Bearer", expiresIn, username, role);
     }
 }

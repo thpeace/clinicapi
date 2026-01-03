@@ -26,6 +26,7 @@ class LoginResponseTest {
     private static final String TEST_TYPE = "Bearer";
     private static final long TEST_EXPIRES_IN = 3600L;
     private static final String TEST_USERNAME = "testuser";
+    private static final String TEST_ROLE = "ADMIN";
 
     @BeforeEach
     void setUp() {
@@ -44,7 +45,8 @@ class LoginResponseTest {
                     () -> assertNull(sut.getToken()),
                     () -> assertNull(sut.getType()),
                     () -> assertEquals(0L, sut.getExpiresIn()),
-                    () -> assertNull(sut.getUsername()));
+                    () -> assertNull(sut.getUsername()),
+                    () -> assertNull(sut.getRole()));
         }
 
         @Test
@@ -52,14 +54,15 @@ class LoginResponseTest {
         void parameterizedConstructor_ShouldSetAllFields() {
             // Act
             LoginResponse response = new LoginResponse(
-                    TEST_TOKEN, TEST_TYPE, TEST_EXPIRES_IN, TEST_USERNAME);
+                    TEST_TOKEN, TEST_TYPE, TEST_EXPIRES_IN, TEST_USERNAME, TEST_ROLE);
 
             // Assert
             assertAll("All fields should be set",
                     () -> assertEquals(TEST_TOKEN, response.getToken()),
                     () -> assertEquals(TEST_TYPE, response.getType()),
                     () -> assertEquals(TEST_EXPIRES_IN, response.getExpiresIn()),
-                    () -> assertEquals(TEST_USERNAME, response.getUsername()));
+                    () -> assertEquals(TEST_USERNAME, response.getUsername()),
+                    () -> assertEquals(TEST_ROLE, response.getRole()));
         }
     }
 
@@ -71,21 +74,22 @@ class LoginResponseTest {
         @DisplayName("of() should create LoginResponse with Bearer type")
         void of_ShouldCreateResponseWithBearerType() {
             // Act
-            LoginResponse response = LoginResponse.of(TEST_TOKEN, TEST_EXPIRES_IN, TEST_USERNAME);
+            LoginResponse response = LoginResponse.of(TEST_TOKEN, TEST_EXPIRES_IN, TEST_USERNAME, TEST_ROLE);
 
             // Assert
             assertAll("Factory method should set correct values",
                     () -> assertEquals(TEST_TOKEN, response.getToken()),
                     () -> assertEquals("Bearer", response.getType(), "Type should be 'Bearer'"),
                     () -> assertEquals(TEST_EXPIRES_IN, response.getExpiresIn()),
-                    () -> assertEquals(TEST_USERNAME, response.getUsername()));
+                    () -> assertEquals(TEST_USERNAME, response.getUsername()),
+                    () -> assertEquals(TEST_ROLE, response.getRole()));
         }
 
         @Test
         @DisplayName("of() should accept zero expiration")
         void of_ShouldAcceptZeroExpiration() {
             // Act
-            LoginResponse response = LoginResponse.of(TEST_TOKEN, 0L, TEST_USERNAME);
+            LoginResponse response = LoginResponse.of(TEST_TOKEN, 0L, TEST_USERNAME, null);
 
             // Assert
             assertEquals(0L, response.getExpiresIn());

@@ -85,15 +85,22 @@ public class AuthService {
                 loginLogService.logSuccessfulLogin(username, user.getId(), ipAddress, userAgent);
             }
 
+            // Get user's role
+            String roleName = null;
+            if (userOpt.isPresent() && userOpt.get().getRole() != null) {
+                roleName = userOpt.get().getRole().getName();
+            }
+
             // Generate JWT token
-            String token = jwtUtil.generateToken(username);
+            String token = jwtUtil.generateToken(username, roleName);
 
             logger.info("User '{}' logged in successfully from IP: {}", username, ipAddress);
 
             return LoginResponse.of(
                     token,
                     jwtUtil.getExpirationInSeconds(),
-                    username);
+                    username,
+                    roleName);
 
         } catch (AuthenticationException e) {
             // Authentication failed - increment failed attempts

@@ -1,5 +1,6 @@
 package com.clinic.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.lang.NonNull;
@@ -36,5 +37,12 @@ public class UserService {
      */
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    /**
+     * Find all users
+     */
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

@@ -23,7 +23,6 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    @SuppressWarnings("null")
     public Patient savePatient(Patient patient) {
         return Objects.requireNonNull(patientRepository.save(patient));
     }

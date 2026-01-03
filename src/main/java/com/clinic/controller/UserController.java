@@ -15,6 +15,8 @@ import org.springframework.lang.NonNull;
 import com.clinic.dto.response.UserDetailResponse;
 import com.clinic.service.UserService;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +35,22 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    /**
+     * Get all users without sensitive data
+     */
+    @GetMapping
+    @Operation(summary = "Get all users", description = "Get all users without password and lockTime")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated or invalid token")
+    })
+    public ResponseEntity<List<UserDetailResponse>> getAllUsers() {
+        List<UserDetailResponse> users = userService.findAll().stream()
+                .map(UserDetailResponse::fromUser)
+                .toList();
+        return ResponseEntity.ok(users);
     }
 
     /**

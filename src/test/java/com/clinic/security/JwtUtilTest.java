@@ -24,6 +24,7 @@ class JwtUtilTest {
     private static final String TEST_SECRET = "ThisIsAVerySecretKeyForHmacSHA256Algorithm!";
     private static final long TEST_EXPIRATION = 3600000L; // 1 hour in milliseconds
     private static final String TEST_USERNAME = "testuser";
+    private static final String TEST_ROLE = "USER";
 
     @BeforeEach
     void setUp() {
@@ -38,7 +39,7 @@ class JwtUtilTest {
         @DisplayName("generateToken should create a non-null token")
         void generateToken_ShouldCreateNonNullToken() {
             // Act
-            String token = sut.generateToken(TEST_USERNAME);
+            String token = sut.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Assert
             assertNotNull(token);
@@ -49,7 +50,7 @@ class JwtUtilTest {
         @DisplayName("generateToken should create token with three parts")
         void generateToken_ShouldCreateTokenWithThreeParts() {
             // Act
-            String token = sut.generateToken(TEST_USERNAME);
+            String token = sut.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Assert - JWT has format: header.payload.signature
             String[] parts = token.split("\\.");
@@ -60,8 +61,8 @@ class JwtUtilTest {
         @DisplayName("generateToken should create different tokens for different users")
         void generateToken_ShouldCreateDifferentTokensForDifferentUsers() {
             // Act
-            String token1 = sut.generateToken("user1");
-            String token2 = sut.generateToken("user2");
+            String token1 = sut.generateToken("user1", TEST_ROLE);
+            String token2 = sut.generateToken("user2", TEST_ROLE);
 
             // Assert
             assertNotEquals(token1, token2);
@@ -76,7 +77,7 @@ class JwtUtilTest {
         @DisplayName("getUsernameFromToken should extract correct username")
         void getUsernameFromToken_ShouldExtractCorrectUsername() {
             // Arrange
-            String token = sut.generateToken(TEST_USERNAME);
+            String token = sut.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Act
             String extractedUsername = sut.getUsernameFromToken(token);
@@ -92,7 +93,7 @@ class JwtUtilTest {
             String[] usernames = { "admin", "user@email.com", "user_123", "User-Name" };
 
             for (String username : usernames) {
-                String token = sut.generateToken(username);
+                String token = sut.generateToken(username, TEST_ROLE);
                 assertEquals(username, sut.getUsernameFromToken(token),
                         "Should extract username: " + username);
             }
@@ -107,7 +108,7 @@ class JwtUtilTest {
         @DisplayName("validateToken should return true for valid token")
         void validateToken_WithValidToken_ShouldReturnTrue() {
             // Arrange
-            String token = sut.generateToken(TEST_USERNAME);
+            String token = sut.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Act
             boolean isValid = sut.validateToken(token);
@@ -152,7 +153,7 @@ class JwtUtilTest {
             // Arrange - Create token with different secret
             JwtUtil otherJwtUtil = new JwtUtil(
                     "AnotherVerySecretKeyForHmacSHA256Algorithm!", TEST_EXPIRATION);
-            String tokenFromOtherSecret = otherJwtUtil.generateToken(TEST_USERNAME);
+            String tokenFromOtherSecret = otherJwtUtil.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Act
             boolean isValid = sut.validateToken(tokenFromOtherSecret);
@@ -166,7 +167,7 @@ class JwtUtilTest {
         void validateToken_WithExpiredToken_ShouldReturnFalse() {
             // Arrange - Create JwtUtil with 1ms expiration (essentially expired)
             JwtUtil shortExpirationJwtUtil = new JwtUtil(TEST_SECRET, 1L);
-            String token = shortExpirationJwtUtil.generateToken(TEST_USERNAME);
+            String token = shortExpirationJwtUtil.generateToken(TEST_USERNAME, TEST_ROLE);
 
             // Wait for token to expire
             try {
