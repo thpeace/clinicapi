@@ -15,7 +15,6 @@ public final class ConfigConstants {
     public static final String SECURITY_BEARER_FORMAT = "JWT";
 
     // CORS Configuration
-    public static final String CORS_ALLOWED_ORIGIN = "http://localhost:5173";
 
     // Public Endpoints (no authentication required)
     public static final String AUTH_PATH_PATTERN = "/api/auth/**";

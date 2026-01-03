@@ -22,6 +22,10 @@ public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     // ===== Primary Key =====
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -305,5 +309,13 @@ public class Product implements Serializable {
 
     public void setTyp(String typ) {
         this.typ = typ;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

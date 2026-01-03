@@ -55,7 +55,7 @@ pipeline {
                         sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@${REMOTE_HOST} "
                             docker load -i /home/docker/clinicapi.tar &&
                             docker rm -f clinicapi || true &&
-                            docker run -d --name clinicapi -p 8080:8080 ${DOCKER_IMAGE}
+                            docker run -d --name clinicapi -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=prod" ${DOCKER_IMAGE}
                         "
                     '''
                 }
