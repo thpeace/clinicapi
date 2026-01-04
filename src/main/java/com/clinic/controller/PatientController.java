@@ -6,12 +6,16 @@ import org.slf4j.LoggerFactory;
 import com.clinic.dto.response.PatientResponse;
 import com.clinic.model.Patient;
 import com.clinic.service.PatientService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -42,11 +46,24 @@ public class PatientController {
         return "Imported " + patients.size() + " patients successfully!";
     }
 
+    private static final Set<Integer> ALLOWED_PAGE_SIZES = Set.of(10, 20, 50, 100, 500);
+
     @GetMapping
-    public List<Patient> getAllPatients() {
-        logger.info("Request received: GET /api/patients");
-        List<Patient> patients = patientService.getAllPatients();
-        logger.info("Returning {} patients", patients.size());
+    public Page<Patient> getAllPatients(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        logger.info("Request received: GET /api/patients with page={}, size={}", page, size);
+
+        // Validate size - default to 10 if not in allowed list
+        if (!ALLOWED_PAGE_SIZES.contains(size)) {
+            logger.warn("Invalid page size {} requested, defaulting to 10", size);
+            size = 10;
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Patient> patients = patientService.getAllPatients(pageable);
+        logger.info("Returning {} patients (page {} of {})",
+                patients.getNumberOfElements(), page, patients.getTotalPages());
         return patients;
     }
 
